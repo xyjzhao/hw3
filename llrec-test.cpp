@@ -67,8 +67,19 @@ void dealloc(Node* head)
 //   function object struct declarations
 // -----------------------------------------------
 
+struct OddFilter {
+    bool operator()(int val) { return val % 2 == 1; }
+};
 
+struct EvenFilter {
+    bool operator()(int val) { return val % 2 == 0; }
+};
 
+struct GreaterThanFilter {
+    int threshold;
+    GreaterThanFilter(int thresh) : threshold(thresh) {}
+    bool operator()(int val) { return val > threshold; }
+};
 
 
 int main(int argc, char* argv[])
@@ -86,10 +97,109 @@ int main(int argc, char* argv[])
     print(head);
 
     // Test out your linked list code
-
-
-
+    
+    Node* smaller = nullptr;
+    Node* larger = nullptr;
+    int pivot = 5;
+    
+    Node* headCopy = nullptr;
+    Node* current = head;
+    Node* tail = nullptr;
+    
+    while (current != nullptr) {
+        if (headCopy == nullptr) {
+            headCopy = new Node(current->val, nullptr);
+            tail = headCopy;
+        } else {
+            tail->next = new Node(current->val, nullptr);
+            tail = tail->next;
+        }
+        current = current->next;
+    }
+    
+    cout << "Pivoting around " << pivot << endl;
+    llpivot(headCopy, smaller, larger, pivot);
+    
+    cout << "Smaller list: ";
+    print(smaller);
+    cout << "Larger list: ";
+    print(larger);
+    cout << "Original list should be empty: ";
+    print(headCopy);
+    
+    dealloc(smaller);
+    dealloc(larger);
+    
+    Node* headCopy2 = nullptr;
+    current = head;
+    tail = nullptr;
+    
+    while (current != nullptr) {
+        if (headCopy2 == nullptr) {
+            headCopy2 = new Node(current->val, nullptr);
+            tail = headCopy2;
+        } else {
+            tail->next = new Node(current->val, nullptr);
+            tail = tail->next;
+        }
+        current = current->next;
+    }
+    
+    OddFilter oddFilter;
+    cout << "Filtering out odd numbers" << endl;
+    Node* filteredList = llfilter(headCopy2, oddFilter);
+    cout << "Filtered list (evens only): ";
+    print(filteredList);
+    
+    dealloc(filteredList);
+    
+    Node* headCopy3 = nullptr;
+    current = head;
+    tail = nullptr;
+    
+    while (current != nullptr) {
+        if (headCopy3 == nullptr) {
+            headCopy3 = new Node(current->val, nullptr);
+            tail = headCopy3;
+        } else {
+            tail->next = new Node(current->val, nullptr);
+            tail = tail->next;
+        }
+        current = current->next;
+    }
+    
+    EvenFilter evenFilter;
+    cout << "Filtering out even numbers" << endl;
+    filteredList = llfilter(headCopy3, evenFilter);
+    cout << "Filtered list (odds only): ";
+    print(filteredList);
+    
+    dealloc(filteredList);
+    
+    Node* headCopy4 = nullptr;
+    current = head;
+    tail = nullptr;
+    
+    while (current != nullptr) {
+        if (headCopy4 == nullptr) {
+            headCopy4 = new Node(current->val, nullptr);
+            tail = headCopy4;
+        } else {
+            tail->next = new Node(current->val, nullptr);
+            tail = tail->next;
+        }
+        current = current->next;
+    }
+    
+    int threshold = 5;
+    GreaterThanFilter gtFilter(threshold);
+    cout << "Filtering out numbers > " << threshold << endl;
+    filteredList = llfilter(headCopy4, gtFilter);
+    cout << "Filtered list (numbers <= " << threshold << "): ";
+    print(filteredList);
+    
+    dealloc(filteredList);
+    dealloc(head);
     
     return 0;
-
 }
